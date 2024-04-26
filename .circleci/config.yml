@@ -1,45 +1,38 @@
 version: 2.1
 
-executors:
-  docker-executor:
-    docker:
-      - image: circleci/python:3.8
-
 jobs:
   build:
-    executor: docker-executor
+    docker:
+      - image: docker:19.03.12
     steps:
       - checkout
-
-      # Install Docker
+      - setup_remote_docker:
+          version: 19.03.12
       - run:
-          name: Install Docker
+          name: Build and Tag Docker Images
           command: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-
-      # Build Docker images
+            docker build -t udagram-api-feed ./udagram-api-feed
+            docker build -t udagram-api-user ./udagram-api-user
+            docker build -t udagram-reverseproxy ./udagram-reverseproxy
+            docker build -t udagram-frontend ./udagram-frontend
+            docker tag udagram-api-feed hideonhp/udagram-api-feed:v2
+            docker tag udagram-api-user hideonhp/udagram-api-user:v2
+            docker tag udagram-reverseproxy hideonhp/udagram-reverseproxy:v2
+            docker tag udagram-frontend hideonhp/udagram-frontend:v2
       - run:
-          name: Build Docker images
+          name: Push Docker Images
           command: |
-            docker --version
-            docker build -t hideonhp/udagram-reverseproxy:latest -f ./udagram-reverseproxy/Dockerfile ./udagram-reverseproxy
-            docker build -t hideonhp/udagram-api-feed:latest -f ./udagram-api-feed/Dockerfile ./udagram-api-feed
-            docker build -t hideonhp/udagram-api-user:latest -f ./udagram-api-user/Dockerfile ./udagram-api-user
-            docker build -t hideonhp/udagram-frontend:latest -f ./udagram-frontend/Dockerfile ./udagram-frontend
-
-      # Log in to Docker Hub and push Docker images
-      - run:
-          name: Push Docker images to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push hideonhp/udagram-reverseproxy:latest
-            docker push hideonhp/udagram-api-feed:latest
-            docker push hideonhp/udagram-api-user:latest
-            docker push hideonhp/udagram-frontend:latest
-
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push hideonhp/udagram-api-feed:v2
+            docker push hideonhp/udagram-api-user:v2
+            docker push hideonhp/udagram-reverseproxy:v2
+            docker push hideonhp/udagram-frontend:v2
 workflows:
   version: 2
-  build_and_push:
+  build_and_deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - main
