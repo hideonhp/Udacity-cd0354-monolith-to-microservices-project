@@ -1,0 +1,17 @@
+services:
+  - docker
+
+install:
+  - docker --version
+  - docker-compose --version
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - export TAG=0.1.$TRAVIS_BUILD_NUMBER
+  - echo $TAG
+  - docker-compose -f docker-compose-build.yaml build
+  - docker push $DOCKER_USERNAME/udagram-reverseproxy:$TAG
+  - docker push $DOCKER_USERNAME/udagram-api-user:$TAG
+  - docker push $DOCKER_USERNAME/udagram-api-feed:$TAG
+  - docker push $DOCKER_USERNAME/udagram-frontend:$TAG
+
+script:
+  - echo "Build $TAG is successful!"
