@@ -1,7 +1,7 @@
-version: 2.1
+version: 3
 
 jobs:
-  build_api_feed:
+  build:
     docker:
       - image: docker:20.10.23
     steps:
@@ -9,84 +9,29 @@ jobs:
       - setup_remote_docker:
           version: 20.10.23
       - run:
-          name: Build Docker Image for udagram-api-feed
+          name: Build and Tag Docker Images
           command: |
             docker build -t udagram-api-feed ./udagram-api-feed
-            docker tag udagram-api-feed hideonhp/udagram-api-feed:v2
-            docker images
-
-  build_api_user:
-    docker:
-      - image: docker:20.10.23
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.23
-      - run:
-          name: Build Docker Image for udagram-api-user
-          command: |
             docker build -t udagram-api-user ./udagram-api-user
-            docker tag udagram-api-user hideonhp/udagram-api-user:v2
-            docker images
-
-  build_reverseproxy:
-    docker:
-      - image: docker:20.10.23
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.23
-      - run:
-          name: Build Docker Image for udagram-reverseproxy
-          command: |
             docker build -t udagram-reverseproxy ./udagram-reverseproxy
-            docker tag udagram-reverseproxy hideonhp/udagram-reverseproxy:v2
-            docker images
-
-  build_frontend:
-    docker:
-      - image: docker:20.10.23
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.23
-      - run:
-          name: Build Docker Image for udagram-frontend
-          command: |
             docker build -t udagram-frontend ./udagram-frontend
-            docker tag udagram-frontend hideonhp/udagram-frontend:v2
-            docker images
-
-  push_docker_images:
-    docker:
-      - image: docker:20.10.23
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.23
+            docker tag udagram-api-feed hideonhp/udagram-api-feed:v1.1
+            docker tag udagram-api-user hideonhp/udagram-api-user:v1.1
+            docker tag udagram-reverseproxy hideonhp/udagram-reverseproxy:v1.1
+            docker tag udagram-frontend hideonhp/udagram-frontend:v1.1
       - run:
-          name: Push Docker Images to Docker Hub
+          name: Push Docker Images
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push hideonhp/udagram-api-feed:v2
-            docker push hideonhp/udagram-api-user:v2
-            docker push hideonhp/udagram-reverseproxy:v2
-            docker push hideonhp/udagram-frontend:v2
-
+            docker push hideonhp/udagram-api-feed:v1.1
+            docker push hideonhp/udagram-api-user:v1.1
+            docker push hideonhp/udagram-reverseproxy:v1.1
+            docker push hideonhp/udagram-frontend:v1.1
 workflows:
-  version: 2
+  version: 3
   build_and_deploy:
     jobs:
-      - build_api_feed
-      - build_api_user
-      - build_reverseproxy
-      - build_frontend
-      - push_docker_images:
-          requires:
-            - build_api_feed
-            - build_api_user
-            - build_reverseproxy
-            - build_frontend
+      - build:
           filters:
             branches:
               only:
