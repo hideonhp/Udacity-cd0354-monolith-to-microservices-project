@@ -12,7 +12,7 @@ jobs:
           name: Build Docker Image for udagram-api-feed
           command: |
             docker build -t udagram-api-feed ./udagram-api-feed
-            docker tag udagram-api-feed hideonhp/udagram-api-feed:v1
+            docker tag udagram-api-feed hideonhp/udagram-api-feed:v2
             docker images
 
   build_api_user:
@@ -26,7 +26,7 @@ jobs:
           name: Build Docker Image for udagram-api-user
           command: |
             docker build -t udagram-api-user ./udagram-api-user
-            docker tag udagram-api-user hideonhp/udagram-api-user:v1
+            docker tag udagram-api-user hideonhp/udagram-api-user:v2
             docker images
 
   build_reverseproxy:
@@ -40,7 +40,7 @@ jobs:
           name: Build Docker Image for udagram-reverseproxy
           command: |
             docker build -t udagram-reverseproxy ./udagram-reverseproxy
-            docker tag udagram-reverseproxy hideonhp/udagram-reverseproxy:v1
+            docker tag udagram-reverseproxy hideonhp/udagram-reverseproxy:v2
             docker images
 
   build_frontend:
@@ -54,7 +54,7 @@ jobs:
           name: Build Docker Image for udagram-frontend
           command: |
             docker build -t udagram-frontend ./udagram-frontend
-            docker tag udagram-frontend hideonhp/udagram-frontend:v1
+            docker tag udagram-frontend hideonhp/udagram-frontend:v2
             docker images
 
   push_docker_images:
@@ -68,10 +68,10 @@ jobs:
           name: Push Docker Images to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push hideonhp/udagram-api-feed:v1
-            docker push hideonhp/udagram-api-user:v1
-            docker push hideonhp/udagram-reverseproxy:v1
-            docker push hideonhp/udagram-frontend:v1
+            docker push hideonhp/udagram-api-feed:v2
+            docker push hideonhp/udagram-api-user:v2
+            docker push hideonhp/udagram-reverseproxy:v2
+            docker push hideonhp/udagram-frontend:v2
 
 workflows:
   version: 2
