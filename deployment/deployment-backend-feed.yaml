@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend-feed
-        image: hideonhp/udagram-api-feed:v1.1
+        image: hideonhp/udagram-api-feed:v1.2
         ports:
         - containerPort: 8080
         resources:
