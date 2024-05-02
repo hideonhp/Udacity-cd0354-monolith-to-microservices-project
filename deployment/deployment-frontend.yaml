@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: hideonhp/udagram-frontend:v1.3
+        image: hideonhp/udagram-frontend:v2.0
         ports:
         - containerPort: 80
         resources:
