@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: reverseproxy
-        image: hideonhp/udagram-reverseproxy:v1.2
+        image: hideonhp/udagram-reverseproxy:v1.3
         ports:
         - containerPort: 8080
         resources:
